@@ -1,19 +1,25 @@
+"use client";
 import Link from "next/link";
+
 import { Button } from "./Button";
 import { NavLink } from "./NavLink";
+import { fetchMovies } from "@/lib/requests";
 
 export const Header = () => {
     return (
-        <header className="w-full h-24 flex justify-between items-center text-white">
-            <Link className="font-semibold hover:text-amber-500" href="/">
+        <header className="w-full bg-sky-800 h-24 flex justify-between items-center text-white px-48">
+            <Link
+                className="text-xl font-semibold hover:text-amber-500"
+                href="/"
+            >
                 Beyond Reviews
             </Link>
-            <li className="flex gap-4">
+            <li className="flex gap-8">
                 <ul>
                     <NavLink href="#" text="Books" />
                 </ul>
                 <ul>
-                    <NavLink href="#" text="Movies" />
+                    <NavLink href="/movies" text="Movies" />
                 </ul>
                 <ul>
                     <NavLink href="#" text="Music" />
