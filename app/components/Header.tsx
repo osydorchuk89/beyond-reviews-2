@@ -25,7 +25,11 @@ export const Header = () => {
                     <NavLink href="#" text="Music" />
                 </ul>
             </li>
-            <Button text="Login" style="amber" />
+            <Button
+                text="Login"
+                style="amber"
+                handleClick={() => fetchMovies(10)}
+            />
         </header>
     );
 };

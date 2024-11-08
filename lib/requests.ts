@@ -1,4 +1,5 @@
 "use server";
+import { cache } from "react";
 import axios from "axios";
 import { PrismaClient } from "@prisma/client";
 
@@ -34,14 +35,16 @@ export const fetchMovies = async (pages: number) => {
                 const movieCrewData = movieCastResponse.data.crew;
                 const movieDirector =
                     movieCrewData.find(
-                        (item: any) => item.job === "Director" || "Co-Director"
+                        (item: any) =>
+                            item.job === ("Director" || "Co-Director")
                     )?.name || "Unknown";
                 const movieGenres = movieData.genres.map(
                     (item: { id: number; name: string }) => item.name
                 );
+                const movieReleaseYear = +movieData.release_date.slice(0, 4);
                 moviesData.push({
                     title: movieData.title,
-                    releaseYear: +movieData.release_date.slice(0, 4),
+                    releaseYear: movieReleaseYear,
                     director: movieDirector,
                     overview: movieData.overview,
                     language: movieData.original_language,
@@ -53,6 +56,7 @@ export const fetchMovies = async (pages: number) => {
                 });
             }
         }
+        console.log(moviesData);
         await prisma.movie.createMany({
             data: moviesData,
         });
@@ -84,11 +88,18 @@ export const fetchMovieGenres = async () => {
     }
 };
 
-export const getAllMovies = async () => {
+export const getAllMovies = cache(async () => {
     try {
-        const movies = await prisma.movie.findMany();
-        return movies;
+        return await prisma.movie.findMany();
     } catch (error) {
         console.log(error);
     }
-}
+});
+
+export const getMovie = cache(async (id: number) => {
+    try {
+        return await prisma.movie.findUnique({ where: { id } });
+    } catch (error) {
+        console.log(error);
+    }
+});

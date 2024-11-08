@@ -13,14 +13,8 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-// model User {
-//     id       String @id @default(uuid())
-//     username String @unique
-//     password String
-// }
-
 model Movie {
-    id          String   @id @default(uuid())
+    id          Int      @id @default(autoincrement())
     title       String
     releaseYear Int
     director    String
