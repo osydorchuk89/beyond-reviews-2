@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { StarIcon } from "./icons/StarIcon";
 import slugify from "slugify";
+
+import { StarIcon } from "./icons/StarIcon";
 
 interface MovieCardProps {
     id: string;
@@ -28,15 +29,21 @@ export const MovieCard = ({
         remove: /[*+~.()'"!:@]/g,
     });
 
+    const displayedTitle =
+        title?.length > 45 ? `${title.substring(0, 45)}...` : title;
+
     return (
-        <div className="flex flex-col w-80 justify-start items-center bg-sky-100 rounded-lg shadow-lg p-5">
-            <p className="text-center text-xl font-bold h-14 mb-2">
-                <Link className="hover:underline" href={`/movies/${slug}`}>
-                    {title}
+        <div className="flex flex-col w-80 justify-start items-center bg-sky-100 rounded-lg shadow-lg p-5 relative">
+            <p className="w-full text-center text-xl font-bold h-16 bg-sky-700 rounded-t-lg flex justify-center items-center absolute top-0 p-4">
+                <Link
+                    className="hover:underline text-sky-50"
+                    href={`/movies/${slug}`}
+                >
+                    {displayedTitle}
                 </Link>
             </p>
-            <p className="mb-2 text-sky-800">{mainGenres}</p>
-            <p className="mb-2 text-sky-800">{releaseYear}</p>
+            <p className="mb-2 text-sky-950 mt-16">{mainGenres}</p>
+            <p className="mb-2 text-sky-950">{releaseYear}</p>
             <Link href={`/movies/${slug}`}>
                 <img src={poster} className="rounded-lg" />
             </Link>
@@ -44,7 +51,7 @@ export const MovieCard = ({
                 <span>
                     <StarIcon className="w-6 h-6 fill-sky-500 border-none" />
                 </span>
-                <span className="text-sky-800">{avgRating.toPrecision(2)}</span>
+                <span className="text-sky-950">{avgRating.toPrecision(2)}</span>
                 <span className="text-gray-600 ml-5">{numRatings} votes</span>
             </div>
         </div>

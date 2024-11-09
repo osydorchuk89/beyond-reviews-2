@@ -4,10 +4,21 @@ import Link from "next/link";
 import { Button } from "./Button";
 import { NavLink } from "./NavLink";
 import { fetchMovies } from "@/lib/requests";
+import { usePathname } from "next/navigation";
 
 export const Header = () => {
+    const path = usePathname();
+    const headerClassName =
+        "w-full bg-sky-800 h-24 flex justify-between items-center text-white px-48";
+
     return (
-        <header className="w-full bg-sky-800 h-24 flex justify-between items-center text-white px-48">
+        <header
+            className={
+                path === "/"
+                    ? headerClassName
+                    : headerClassName + " sticky top-0 z-10"
+            }
+        >
             <Link
                 className="text-xl font-semibold hover:text-amber-500"
                 href="/"
