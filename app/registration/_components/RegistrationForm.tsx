@@ -98,22 +98,7 @@ export const RegistrationForm = () => {
         photo: false,
     });
 
-    const [formState, formAction] = useActionState(sendRegistrationData, {
-        errors: {
-            firstName: undefined,
-            lastName: undefined,
-            email: undefined,
-            password: undefined,
-            photo: undefined,
-        },
-        payload: {
-            firstName: null,
-            lastName: null,
-            email: null,
-            password: null,
-            photo: null,
-        },
-    });
+    const [formState, formAction] = useActionState(sendRegistrationData, null);
 
     return (
         <form

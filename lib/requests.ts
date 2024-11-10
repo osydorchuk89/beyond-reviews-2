@@ -2,9 +2,12 @@
 import { cache } from "react";
 import axios from "axios";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
-import { UserSchema } from "./schemas";
+import { LoginSchema, UserSchema } from "./schemas";
+import { signIn } from "@/auth";
+import { redirect } from "next/navigation";
+import { AuthError } from "next-auth";
 
 const prisma = new PrismaClient();
 const BASE_URL = "https://api.themoviedb.org/3/movie/";
@@ -149,7 +152,7 @@ export const sendRegistrationData = async (
             payload: registrationData,
         };
     } else {
-        const hashedPassword = await bcrypt.hash(validatedData.password, 12);
+        const hashedPassword = await bcryptjs.hash(validatedData.password, 12);
         validatedData.password = hashedPassword;
         try {
             await prisma.user.create({
@@ -158,6 +161,47 @@ export const sendRegistrationData = async (
             console.log("success");
         } catch (error: any) {
             console.log(error);
+        }
+    }
+};
+
+export const sendLoginData = async (prevState: any, formData: FormData) => {
+    try {
+        await signIn("credentials", formData);
+        return {
+            errors: { credentials: null },
+            payload: {
+                email: null,
+                password: null,
+            },
+        };
+    } catch (error: any) {
+        switch (error.type) {
+            case "CredentialsSignin":
+                return {
+                    errors: { credentials: "Invalid credentials" },
+                    payload: {
+                        email: formData.get("email"),
+                        password: formData.get("password"),
+                    },
+                };
+            case undefined:
+                // return {
+                //     errors: { credentials: "success" },
+                //     payload: {
+                //         email: undefined,
+                //         password: undefined,
+                //     },
+                // };
+                redirect("/");
+            default:
+                return {
+                    errors: { credentials: "Something went wrong" },
+                    payload: {
+                        email: formData.get("email"),
+                        password: formData.get("password"),
+                    },
+                };
         }
     }
 };
