@@ -1,7 +1,7 @@
 import { getAllMovies } from "@/lib/requests";
-import { MovieList } from "./components/MovieList";
-import { SearchBar } from "./components/SearchBar";
-import { SortFilterBar } from "./components/SortFilterBar";
+import { MovieList } from "./_components/MovieList";
+import { SearchBar } from "./_components/SearchBar";
+import { SortFilterBar } from "./_components/SortFilterBar";
 import { sideBarFilterList, sideBarSortList } from "@/lib/data";
 
 export default async function MainMoviesPage(props: {

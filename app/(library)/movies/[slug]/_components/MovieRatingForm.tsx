@@ -1,4 +1,4 @@
-import { NavLink } from "@/app/components/NavLink";
+import { NavLink } from "@/app/_components/NavLink";
 import { Movie } from "@prisma/client";
 
 export const MovieRatingForm = ({ movie }: { movie: Movie }) => {

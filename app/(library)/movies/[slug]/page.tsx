@@ -1,7 +1,7 @@
 import { getMovie } from "@/lib/requests";
-import { MovieMainInfo } from "./components/MovieMainInfo";
-import { MovieAdditionalInfo } from "./components/MovieAdditionalInfo";
-import { MovieRatingForm } from "./components/MovieRatingForm";
+import { MovieMainInfo } from "./_components/MovieMainInfo";
+import { MovieAdditionalInfo } from "./_components/MovieAdditionalInfo";
+import { MovieRatingForm } from "./_components/MovieRatingForm";
 
 export default async function MoviePage({
     params,

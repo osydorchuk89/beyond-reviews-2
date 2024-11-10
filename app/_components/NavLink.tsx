@@ -8,7 +8,7 @@ interface NavLinkProps {
 
 export const NavLink = ({ href, text }: NavLinkProps) => {
     return (
-        <Link className="hover:text-amber-500" href={href}>
+        <Link className="hover:text-amber-500 hover:underline" href={href}>
             {text}
         </Link>
     );

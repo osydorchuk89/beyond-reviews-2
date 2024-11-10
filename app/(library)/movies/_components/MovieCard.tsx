@@ -4,7 +4,7 @@ import slugify from "slugify";
 import { StarIcon } from "./icons/StarIcon";
 
 interface MovieCardProps {
-    id: string;
+    id: number;
     title: string;
     releaseYear: number;
     genres: string[];

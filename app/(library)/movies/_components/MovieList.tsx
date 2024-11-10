@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Movie } from "@prisma/client";
 import { MovieCard } from "./MovieCard";
-import { Button } from "@/app/components/Button";
+import { Button } from "@/app/_components/Button";
 
 export const MovieList = ({ movies }: { movies: Movie[] }) => {
     const [numberMovies, setNumberMovies] = useState(15);

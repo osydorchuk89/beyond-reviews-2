@@ -2,6 +2,9 @@
 import { cache } from "react";
 import axios from "axios";
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+
+import { UserSchema } from "./schemas";
 
 const prisma = new PrismaClient();
 const BASE_URL = "https://api.themoviedb.org/3/movie/";
@@ -103,3 +106,58 @@ export const getMovie = cache(async (id: number) => {
         console.log(error);
     }
 });
+
+export const sendRegistrationData = async (
+    prevState: any,
+    formData: FormData
+) => {
+    const registrationData = {
+        firstName: formData.get("firstName"),
+        lastName: formData.get("lastName"),
+        email: formData.get("email"),
+        password: formData.get("password"),
+        photo: formData.get("photo"),
+    };
+
+    if ((registrationData.photo as File).size === 0) {
+        (registrationData.photo as string) =
+            "https://beyond-reviews-os.s3.eu-central-1.amazonaws.com/user-icon.png";
+    }
+
+    const validationResult = UserSchema.safeParse(registrationData);
+    let validationErrors = validationResult.error?.flatten().fieldErrors;
+    if (!validationResult.success) {
+        return {
+            errors: validationErrors!,
+            payload: registrationData,
+        };
+    }
+
+    const validatedData = validationResult.data;
+    const userExists = await prisma.user.findUnique({
+        where: {
+            email: validatedData.email,
+        },
+    });
+    if (userExists) {
+        validationErrors = {
+            ...validationErrors,
+            email: ["User with this email already exists"],
+        };
+        return {
+            errors: validationErrors,
+            payload: registrationData,
+        };
+    } else {
+        const hashedPassword = await bcrypt.hash(validatedData.password, 12);
+        validatedData.password = hashedPassword;
+        try {
+            await prisma.user.create({
+                data: validatedData,
+            });
+            console.log("success");
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+};

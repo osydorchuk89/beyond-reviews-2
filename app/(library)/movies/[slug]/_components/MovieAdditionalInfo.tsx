@@ -1,6 +1,6 @@
-import { NavLink } from "@/app/components/NavLink";
+import { NavLink } from "@/app/_components/NavLink";
 import { Movie } from "@prisma/client";
-import { StarIcon } from "../../components/icons/StarIcon";
+import { StarIcon } from "../../_components/icons/StarIcon";
 
 export const MovieAdditionalInfo = ({ movie }: { movie: Movie }) => {
     return (

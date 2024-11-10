@@ -2,7 +2,7 @@
 
 import { FormEvent, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { Button } from "@/app/components/Button";
+import { Button } from "@/app/_components/Button";
 import { CloseIcon } from "./icons/CloseIcon";
 
 export const SearchBar = () => {
