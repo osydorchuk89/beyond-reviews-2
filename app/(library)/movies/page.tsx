@@ -1,4 +1,4 @@
-import { getAllMovies } from "@/lib/requests";
+import { getAllMovies } from "@/lib/actions";
 import { MovieList } from "./_components/MovieList";
 import { SearchBar } from "./_components/SearchBar";
 import { SortFilterBar } from "./_components/SortFilterBar";

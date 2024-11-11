@@ -4,14 +4,22 @@ import Link from "next/link";
 import { Button } from "@/app/_components/Button";
 import { SocialLoginButton } from "./SocialLoginButton";
 import { useActionState, useState } from "react";
-import { sendLoginData } from "@/lib/requests";
+import { loginWithCredentials } from "@/lib/actions";
+import { useAppDispatch } from "@/store/hooks";
+import { infoBarActions } from "@/store";
 
 export const LoginForm = () => {
     const [focusedFields, setFocusedFields] = useState({
         email: false,
         password: false,
     });
-    const [formState, formAction] = useActionState(sendLoginData, null);
+    const [formState, formAction, pending] = useActionState(
+        loginWithCredentials,
+        null
+    );
+
+    const dispatch = useAppDispatch();
+
     return (
         <div className="flex flex-col justify-center items-center">
             <form
@@ -23,6 +31,10 @@ export const LoginForm = () => {
                         password: false,
                     });
                     formAction(formData);
+                    // setTimeout(
+                    //     () => dispatch(infoBarActions.showLoggedInBar()),
+                    //     1000
+                    // );
                 }}
             >
                 <p className="text-2xl font-bold text-center">
@@ -67,7 +79,7 @@ export const LoginForm = () => {
                 <p className="text-red-700 font-medium">
                     {!focusedFields.email &&
                         !focusedFields.password &&
-                        formState?.errors.credentials}
+                        formState?.error}
                 </p>
                 <div className="flex justify-center">
                     <Button type="submit" style="amber" text="LOGIN" />

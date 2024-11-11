@@ -13,11 +13,13 @@
 // import { useAppDispatch, useAppSelector } from "../../store/hooks";
 // import { dropDownMenuActions, infoBarActions } from "../../store";
 
+import { auth } from "@/auth";
 import { LoginForm } from "./_components/LoginForm";
+import { redirect } from "next/navigation";
 
 // const routeApi = getRouteApi("/login/");
 
-export default function LoginPage() {
+export default async function LoginPage() {
     // const { redirect } = routeApi.useSearch();
 
     // const [invalidCredentials, setInvalidCredentials] = useState(false);
@@ -71,9 +73,15 @@ export default function LoginPage() {
     //     mutationFn: sendLoginFormData,
     // });
 
+    const session = await auth();
+
+    if (session) {
+        redirect("/");
+    }
+
     return (
-        <div className="flex flex-col justify-center items-center h-[720px] text-sky-950">
-            <LoginForm/>
+        <div className="flex flex-col justify-center items-center h-full py-14 text-sky-950">
+            <LoginForm />
         </div>
     );
 }

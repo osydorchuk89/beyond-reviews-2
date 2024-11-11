@@ -4,10 +4,9 @@ import axios from "axios";
 import { PrismaClient } from "@prisma/client";
 import bcryptjs from "bcryptjs";
 
-import { LoginSchema, UserSchema } from "./schemas";
+import { UserSchema } from "./schemas";
 import { signIn } from "@/auth";
 import { redirect } from "next/navigation";
-import { AuthError } from "next-auth";
 
 const prisma = new PrismaClient();
 const BASE_URL = "https://api.themoviedb.org/3/movie/";
@@ -158,18 +157,20 @@ export const sendRegistrationData = async (
             await prisma.user.create({
                 data: validatedData,
             });
-            console.log("success");
         } catch (error: any) {
             console.log(error);
         }
     }
 };
 
-export const sendLoginData = async (prevState: any, formData: FormData) => {
+export const loginWithCredentials = async (
+    prevState: any,
+    formData: FormData
+) => {
     try {
         await signIn("credentials", formData);
         return {
-            errors: { credentials: null },
+            error: null,
             payload: {
                 email: null,
                 password: null,
@@ -179,24 +180,17 @@ export const sendLoginData = async (prevState: any, formData: FormData) => {
         switch (error.type) {
             case "CredentialsSignin":
                 return {
-                    errors: { credentials: "Invalid credentials" },
+                    error: "Invalid credentials",
                     payload: {
                         email: formData.get("email"),
                         password: formData.get("password"),
                     },
                 };
             case undefined:
-                // return {
-                //     errors: { credentials: "success" },
-                //     payload: {
-                //         email: undefined,
-                //         password: undefined,
-                //     },
-                // };
                 redirect("/");
             default:
                 return {
-                    errors: { credentials: "Something went wrong" },
+                    error: "Something went wrong",
                     payload: {
                         email: formData.get("email"),
                         password: formData.get("password"),
@@ -204,4 +198,8 @@ export const sendLoginData = async (prevState: any, formData: FormData) => {
                 };
         }
     }
+};
+
+export const loginWithGoogle = async () => {
+    await signIn("google");
 };

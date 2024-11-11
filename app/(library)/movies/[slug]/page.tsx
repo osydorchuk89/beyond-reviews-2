@@ -1,4 +1,4 @@
-import { getMovie } from "@/lib/requests";
+import { getMovie } from "@/lib/actions";
 import { MovieMainInfo } from "./_components/MovieMainInfo";
 import { MovieAdditionalInfo } from "./_components/MovieAdditionalInfo";
 import { MovieRatingForm } from "./_components/MovieRatingForm";

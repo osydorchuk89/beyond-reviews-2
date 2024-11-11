@@ -3,6 +3,10 @@ import "./globals.css";
 import { Header } from "./_components/Header";
 import { Footer } from "./_components/Footer";
 import { auth } from "@/auth";
+import { InfoBarWrapper } from "./_components/InfoBarWrapper";
+import { Provider } from "react-redux";
+import { store } from "@/store";
+import { Providers } from "./StoreProvider";
 
 export const metadata: Metadata = {
     title: "Beyond Reviews",
@@ -15,15 +19,17 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     const session = await auth();
-    console.log(session);
 
     return (
-        <html lang="en">
-            <body>
-                <Header isAuthenticated={session ? true : false} />
-                {children}
-                <Footer />
-            </body>
-        </html>
+        <Providers>
+            <html lang="en">
+                <body>
+                    <Header isAuthenticated={session ? true : false} />
+                    <InfoBarWrapper />
+                    {children}
+                    <Footer />
+                </body>
+            </html>
+        </Providers>
     );
 }

@@ -1,13 +1,11 @@
-// import { BASE_URL } from "../../lib/urls";
+import { loginWithGoogle } from "@/lib/actions";
 
 export const SocialLoginButton = () => {
     return (
         <button
             className="flex justify-center items-center relative py-2 border border-gray-300 rounded-md bg-sky-50 hover:bg-sky-200"
             type="button"
-            // onClick={() => {
-            //     location.href = BASE_URL + "auth/google";
-            // }}
+            onClick={loginWithGoogle}
         >
             <div className="absolute left-3">
                 <svg

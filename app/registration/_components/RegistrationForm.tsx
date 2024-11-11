@@ -12,7 +12,7 @@
 // import { infoBarActions } from "../../store";
 
 import { Button } from "@/app/_components/Button";
-import { sendRegistrationData } from "@/lib/requests";
+import { sendRegistrationData } from "@/lib/actions";
 import { FormEvent, useActionState, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 

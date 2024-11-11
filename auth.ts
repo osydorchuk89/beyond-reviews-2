@@ -2,16 +2,13 @@ import bcryptjs from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { LoginSchema } from "./lib/schemas";
-import { ZodError } from "zod";
+import Google from "next-auth/providers/google";
 
 const prisma = new PrismaClient();
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [
         Credentials({
-            // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-            // e.g. domain, username, password, 2FA token, etc.
             credentials: {
                 email: { label: "Username" },
                 password: { label: "Password", type: "password" },
@@ -19,20 +16,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             authorize: async (credentials) => {
                 try {
                     let user = null;
+                    const { email, password } = <
+                        { email: string; password: string }
+                    >credentials;
 
-                    const { email, password } = await LoginSchema.parseAsync(
-                        credentials
-                    );
-
-                    // logic to verify if the user exists
                     user = await prisma.user.findUnique({
                         where: { email },
                     });
 
                     if (!user) {
-                        // No user found, so this is their first attempt to login
-                        // Optionally, this is also the place you could do a user registration
-                        throw new Error("Invalid credentials.");
+                        // throw new Error("Invalid credentials.");
+                        return null;
                     }
 
                     const passwordCorrect = await bcryptjs.compare(
@@ -41,25 +35,48 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     );
 
                     if (!passwordCorrect) {
-                        // No user found, so this is their first attempt to login
-                        // Optionally, this is also the place you could do a user registration
-                        throw new Error("Invalid credentials.");
-                    }
-
-                    // return user object with their profile data
-                    return user;
-                } catch (error) {
-                    if (error instanceof ZodError) {
-                        // Return `null` to indicate that the credentials are invalid
+                        // throw new Error("Invalid credentials.");
                         return null;
                     }
+
+                    return user;
+                } catch (error) {
+                    return null;
                 }
             },
-            secret: process.env.AUTH_SECRET,
-            pages: {
-                signIn: "/login",
-            },
-            debug: process.env.NODE_ENV === "development",
         }),
+        Google,
     ],
+    secret: process.env.AUTH_SECRET,
+    pages: {
+        signIn: "/login",
+    },
+    callbacks: {
+        async signIn({ account, profile }) {
+            if (account!.provider === "google") {
+                const user = await prisma.user.findUnique({
+                    where: { email: profile?.email as string },
+                });
+                if (!user) {
+                    const newUserData = {
+                        firstName: profile?.given_name as string,
+                        lastName: profile?.family_name as string,
+                        email: profile?.email as string,
+                        password: "",
+                        photo: profile?.picture as string,
+                    };
+                    try {
+                        await prisma.user.create({ data: newUserData });
+                    } catch (error) {
+                        return {
+                            error: "Cannot save new user",
+                        };
+                    }
+                }
+                return true;
+            }
+            return true;
+        },
+    },
+    debug: process.env.NODE_ENV === "development",
 });
